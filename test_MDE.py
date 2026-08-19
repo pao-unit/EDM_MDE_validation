@@ -1,14 +1,7 @@
 """Validation tests for dimx MDE"""
 
-try:
-    from pyEDM import sampleData
-except ImportError:
-    raise ImportError("test_MDE(): pyEDM sampleData not imported")
-
-try:
-    import dimx as dx
-except ImportError:
-    raise ImportError("test_MDE(): MDE dimx package not imported")
+import dimx as dx
+from pyEDM import sampleData
 
 from conftest import MDE_FlyData, MDEArgs, ValidData
 

@@ -1,11 +1,7 @@
 """Validation tests for pyEDM CCM"""
 
+import pyEDM as EDM
 from numpy import nan
-
-try:
-    import pyEDM as EDM
-except ImportError:
-    raise ImportError("test_CCM(): pyEDM package not imported")
 
 from conftest import CCMArgs, ValidData
 

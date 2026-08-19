@@ -1,12 +1,8 @@
 """Validation tests for pyEDM SMap"""
 
+import pyEDM as EDM
 import pytest
 from numpy import nan
-
-try:
-    import pyEDM as EDM
-except ImportError:
-    raise ImportError("test_SMap(): pyEDM package not imported")
 
 from conftest import SMapArgs, ValidData
 

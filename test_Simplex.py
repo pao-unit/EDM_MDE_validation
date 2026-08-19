@@ -1,12 +1,8 @@
 """Validation tests for pyEDM Simplex"""
 
+import pyEDM as EDM
 from numpy import array, array_equal, nan
 from pandas import DataFrame
-
-try:
-    import pyEDM as EDM
-except ImportError:
-    raise ImportError("test_Simplex(): pyEDM package not imported")
 
 from conftest import SimplexArgs, ValidData
 
