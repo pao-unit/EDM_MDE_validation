@@ -139,7 +139,7 @@ def test_simplex6():
 # ------------------------------------------------------------
 def test_simplex7():
     """disjoint pred w/ nan"""
-    data = EDM.sampleData["Lorenz5D"]
+    data = EDM.sampleData["Lorenz5D"].copy()
     data.iloc[[8, 50, 501], [1, 2]] = nan
 
     kwargs = SimplexArgs.copy()
