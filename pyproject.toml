@@ -18,3 +18,8 @@ dev = [
     "ruff>=0.16.3",
     "ty>=0.0.72",
 ]
+
+[tool.ruff.lint]
+# C408: the original test suite intentionally uses dict(key = value)
+# for keyword-argument tables; keep that style.
+ignore = ["C408"]

@@ -1,6 +1,5 @@
 
 '''Validation tests for dimx MDE'''
-import pytest
 
 try:
     from pyEDM import sampleData
@@ -12,11 +11,12 @@ try:
 except ImportError:
     raise ImportError( "test_MDE(): MDE dimx package not imported" )
 
-from conftest import MDEArgs, ValidData, MDE_FlyData
+from conftest import MDE_FlyData, MDEArgs, ValidData
+
 
 #------------------------------------------------------------
 def test_mde1():
-    '''   '''
+    '''MDE on pyEDM Lorenz5D sample data'''
     data = sampleData["Lorenz5D"]
     kwargs = MDEArgs.copy()
     kwargs.update( dict(removeTime      = True,
@@ -42,7 +42,7 @@ def test_mde1():
 
 #------------------------------------------------------------
 def test_mde2():
-    '''   '''
+    '''MDE on dimx Fly data'''
     data = MDE_FlyData()
 
     kwargs = MDEArgs.copy()

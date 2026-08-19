@@ -1,7 +1,5 @@
 
 '''Validation tests for pyEDM EmbedDimension'''
-import pytest
-from   pandas import DataFrame
 
 try:
     import pyEDM as EDM
@@ -9,6 +7,7 @@ except ImportError:
     raise ImportError( "test_EDim(): pyEDM package not imported" )
 
 from conftest import EmbedDimensionArgs, ValidData
+
 
 #------------------------------------------------------------
 def test_edim1():

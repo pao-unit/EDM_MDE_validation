@@ -12,8 +12,8 @@ Contents:
 """
 
 import os
-from   multiprocessing import get_context, get_start_method
-from   typing import Any
+from multiprocessing import get_context, get_start_method
+from typing import Any
 
 from pandas import read_csv
 
