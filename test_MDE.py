@@ -14,6 +14,7 @@ def test_mde1():
     kwargs.update(
         dict(
             removeTime=True,
+            noTime=True,
             removeColumns=["V5"],
             D=4,
             target="V5",
@@ -46,6 +47,7 @@ def test_mde2():
     kwargs.update(
         dict(
             removeTime=True,
+            noTime=True,
             removeColumns=["FWD", "Left_Right"],
             D=7,
             target="FWD",
