@@ -83,6 +83,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "dimx" },
     { name = "edmkit" },
+    { name = "edmkit-search" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyedm" },
@@ -99,6 +100,7 @@ dev = [
 requires-dist = [
     { name = "dimx", specifier = ">=1.2.0" },
     { name = "edmkit", specifier = ">=0.0.12" },
+    { name = "edmkit-search", specifier = ">=0.2.1" },
     { name = "numpy", specifier = ">=2.5.2" },
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "pyedm", specifier = ">=2.5.6" },
@@ -125,6 +127,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b9/cd/7becd92d65f718e15fa242e93370c024075aa19cfe4e6f3f1d73550710b9/edmkit-0.0.12.tar.gz", hash = "sha256:fbb617898995d55e8613b0384568f5cec37539fb5236e421e1004412b7dd5483", size = 16987, upload-time = "2026-08-09T12:47:22.107Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bf/a4/8649f6fba1707598dffdc166c63c239619e73852f2bde35270c4476ff773/edmkit-0.0.12-py3-none-any.whl", hash = "sha256:5179c4603266fcabb73aa8c86c1f639db8a90297ece4386afbfedae9e96bb500", size = 25569, upload-time = "2026-08-09T12:47:21.024Z" },
+]
+
+[[package]]
+name = "edmkit-search"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "edmkit" },
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/60/dd/ebdb786c2c728cd27385e4558612871a9716a526a4abc6edab01b2095ca5/edmkit_search-0.2.1.tar.gz", hash = "sha256:a4e9cf0026da44eabecb3fc28478004d58d59b0c33e522937e37527dc51d716e", size = 12341, upload-time = "2026-08-10T05:45:19.853Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/42/59/dafb5a8ce20b49789bbd9224569a58fcbd5ceead173f2f0aa8a5c242adff/edmkit_search-0.2.1-py3-none-any.whl", hash = "sha256:149cc9eb86bed9748a4f4d1128b02446613ba1aae90f6d168c42f447b963ebc8", size = 24857, upload-time = "2026-08-10T05:45:19.028Z" },
 ]
 
 [[package]]
