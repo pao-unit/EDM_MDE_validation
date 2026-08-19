@@ -7,7 +7,7 @@ from   pandas import DataFrame
 try:
     import pyEDM as EDM
 except ImportError:
-    raise( "test_SMap(): pyEDM package not imported" )
+    raise ImportError( "test_SMap(): pyEDM package not imported" )
 
 from conftest import SMapArgs, ValidData
 

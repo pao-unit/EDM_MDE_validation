@@ -5,12 +5,12 @@ import pytest
 try:
     from pyEDM import sampleData
 except ImportError:
-    raise( "test_MDE(): pyEDM sampleData not imported" )
+    raise ImportError( "test_MDE(): pyEDM sampleData not imported" )
 
 try:
     import dimx as dx
 except ImportError:
-    raise( "test_MDE(): MDE dimx package not imported" )
+    raise ImportError( "test_MDE(): MDE dimx package not imported" )
 
 from conftest import MDEArgs, ValidData, MDE_FlyData
 
@@ -33,6 +33,7 @@ def test_mde1():
     mde.Run()
 
     df  = mde.MDEOut
+    assert df is not None
     dfv = ValidData("MDE_test1_valid.csv")
 
     mdeOut = round(  df.iloc[:,1:], 3 )
@@ -58,6 +59,7 @@ def test_mde2():
     mde.Run()
 
     df  = mde.MDEOut
+    assert df is not None
     dfv = ValidData("MDE_test2_valid.csv")
 
     mdeOut = round(  df.iloc[:,1:], 2 )

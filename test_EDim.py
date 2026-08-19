@@ -6,7 +6,7 @@ from   pandas import DataFrame
 try:
     import pyEDM as EDM
 except ImportError:
-    raise( "test_EDim(): pyEDM package not imported" )
+    raise ImportError( "test_EDim(): pyEDM package not imported" )
 
 from conftest import EmbedDimensionArgs, ValidData
 

@@ -13,6 +13,7 @@ Contents:
 
 import os
 from   multiprocessing import get_context, get_start_method
+from   typing import Any
 
 from pandas import read_csv
 
@@ -25,10 +26,11 @@ def GetMP_ContextName():
     allowedContext = ("forkserver", "spawn")
     current = get_start_method( allow_none = True )
     if current in allowedContext:
-        return get_context( current )._name
+        return current
     for method in allowedContext:
         try:
-            return get_context( method )._name
+            get_context( method )
+            return method
         except ValueError:
             continue
 
@@ -52,7 +54,7 @@ def MDE_FlyData():
     try:
         import dimx as dx
     except ImportError:
-        raise( "MDE_FlyData(): MDE package dimx not imported" )
+        raise ImportError( "MDE_FlyData(): MDE package dimx not imported" )
 
     file_path = os.path.dirname(os.path.abspath(dx.__file__))
     return read_csv( file_path + "/data/Fly80XY_norm_1061.csv" )
@@ -83,7 +85,7 @@ SimplexArgs = dict( columns         = "",
                     ignoreNan       = True,
                     returnObject    = False )
 
-SMapArgs = dict( columns         = "",
+SMapArgs: dict[str, Any] = dict( columns         = "",
                  target          = "",
                  lib             = "",
                  pred            = "",

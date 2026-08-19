@@ -8,7 +8,7 @@ from   pandas import DataFrame
 try:
     import pyEDM as EDM
 except ImportError:
-    raise( "test_Simplex(): pyEDM package not imported" )
+    raise ImportError( "test_Simplex(): pyEDM package not imported" )
 
 from conftest import SimplexArgs, ValidData
 

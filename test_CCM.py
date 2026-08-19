@@ -7,7 +7,7 @@ from   pandas import DataFrame
 try:
     import pyEDM as EDM
 except ImportError:
-    raise( "test_CCM(): pyEDM package not imported" )
+    raise ImportError( "test_CCM(): pyEDM package not imported" )
 
 from conftest import CCMArgs, ValidData
 
