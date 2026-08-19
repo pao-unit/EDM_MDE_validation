@@ -23,6 +23,7 @@ def test_mde1():
             crossMapRhoMin=0.2,
             embedDimRhoMin=0.2,
             firstEMax=True,
+            ccmSeed=123,
         )
     )
 
@@ -33,8 +34,8 @@ def test_mde1():
     assert df is not None
     dfv = ValidData("MDE_test1_valid.csv")
 
-    mdeOut = round(df.iloc[:, 1:], 3)
-    valid = round(dfv.iloc[:, 1:], 3)
+    mdeOut = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert mdeOut.equals(valid)
 
 
@@ -55,6 +56,7 @@ def test_mde2():
             crossMapRhoMin=0.2,
             embedDimRhoMin=0.2,
             firstEMax=True,
+            ccmSeed=123,
         )
     )
 
@@ -65,6 +67,6 @@ def test_mde2():
     assert df is not None
     dfv = ValidData("MDE_test2_valid.csv")
 
-    mdeOut = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    mdeOut = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert mdeOut.equals(valid)

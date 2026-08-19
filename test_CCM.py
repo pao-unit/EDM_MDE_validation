@@ -18,15 +18,15 @@ def test_ccm1():
             libSizes=[10, 20, 30, 40, 50, 60, 70, 75],
             sample=100,
             E=3,
-            seed=777,
+            seed=123,
         )
     )
 
     df = EDM.CCM(data, **kwargs)
     dfv = ValidData("CCM_anch_sst_valid.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)
 
 
@@ -44,15 +44,15 @@ def test_ccm2():
             E=5,
             Tp=10,
             tau=-5,
-            seed=777,
+            seed=123,
         )
     )
 
     df = EDM.CCM(data, **kwargs)
     dfv = ValidData("CCM_Lorenz5D_MV_valid.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)
 
 
@@ -73,15 +73,15 @@ def test_ccm3():
             sample=100,
             E=2,
             Tp=5,
-            seed=777,
+            seed=123,
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = EDM.CCM(dfn, **kwargs)
     dfv = ValidData("CCM_nan_valid.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)
 
 
@@ -98,15 +98,15 @@ def test_ccm4():
             sample=30,
             E=2,
             Tp=-5,
-            seed=777,
+            seed=123,
         )
     )
 
     df = EDM.CCM(data, **kwargs)
     dfv = ValidData("CCM_NegativeTp.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)
 
 
@@ -125,15 +125,15 @@ def test_ccm5():
             Tp=10,
             tau=-5,
             exclusionRadius=20,
-            seed=777,
+            seed=123,
         )
     )
 
     df = EDM.CCM(data, **kwargs)
     dfv = ValidData("CCM_exclusionRadius.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)
 
 
@@ -150,13 +150,13 @@ def test_ccm6():
             sample=100,
             E=2,
             tau=3,
-            seed=777,
+            seed=123,
         )
     )
 
     df = EDM.CCM(data, **kwargs)
     dfv = ValidData("CCM_positiveTau.csv")
 
-    ccm = round(df.iloc[:, 1:], 2)
-    valid = round(dfv.iloc[:, 1:], 2)
+    ccm = round(df.iloc[:, 1:], 6)
+    valid = round(dfv.iloc[:, 1:], 6)
     assert ccm.equals(valid)

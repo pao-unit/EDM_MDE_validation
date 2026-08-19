@@ -30,11 +30,9 @@ from test_edmkit_edim_helper import embed_dimension, simplex_rho
 #
 # The EmbedDimension gate reuses the validated edmkit embed_dimension
 # mirror.  The CCM gate has no edmkit counterpart yet and calls pyEDM
-# CCM exactly as dimx does; with ccmSeed None the CCM library sampling
-# is random, so near-threshold slopes can flip the selected variable
-# between runs (dimx itself has this property).  test_MDE therefore
-# compares only rho at 2-3 decimals, and this mirror inherits that
-# comparison contract.
+# CCM exactly as dimx does.  The tests pin ccmSeed (123, as test_CCM
+# does) so the CCM library sampling -- and with it the whole variable
+# selection -- is reproducible.
 # ------------------------------------------------------------
 
 
