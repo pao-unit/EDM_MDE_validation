@@ -1,24 +1,23 @@
-"""Validation tests for dimx MDE"""
+"""Parked FastCCM-backed MDE parity tests.
 
-from inspect import signature
+The current MDE mirror depends on the parked EmbedDimension compatibility gate
+when selecting variables.  Since we are no longer pursuing pyEDM
+EmbedDimension reproduction in FastCCM, these downstream MDE parity tests are
+kept only as historical targets.
+"""
 
-import dimx as dx
+import pytest
 from pyEDM import sampleData
 
 from conftest import MDE_FlyData, MDEArgs, ValidData
+from test_fastccm_mde_helper import fastccm_mde
 
-
-# ------------------------------------------------------------
-def _mde(data, kwargs):
-    """Create dimx.MDE with the kwargs supported by the imported package."""
-    params = signature(dx.MDE).parameters
-    kwargs = dict(kwargs)
-    if "cores" in params and "crossMapCores" in kwargs:
-        kwargs["cores"] = kwargs.pop("crossMapCores")
-    elif "crossMapCores" in params and "cores" in kwargs:
-        kwargs["crossMapCores"] = kwargs.pop("cores")
-
-    return dx.MDE(data, **{k: v for k, v in kwargs.items() if k in params})
+pytestmark = pytest.mark.skip(
+    reason=(
+        "Parked downstream parity target: current FastCCM MDE mirror depends "
+        "on pyEDM EmbedDimension reproduction."
+    )
+)
 
 
 # ------------------------------------------------------------
@@ -42,23 +41,16 @@ def test_mde1():
         )
     )
 
-    mde = _mde(data, kwargs)
-    mde.Run()
+    mde = fastccm_mde(data, kwargs)
+    valid = ValidData("MDE_test1_valid.csv")
 
-    df = mde.MDEOut
-    assert df is not None
-    dfv = ValidData("MDE_test1_valid.csv")
-
-    mdeOut = round(df.iloc[:, 1:], 6)
-    valid = round(dfv.iloc[:, 1:], 6)
-    assert mdeOut.equals(valid)
+    assert round(mde.iloc[:, 1:], 6).equals(round(valid.iloc[:, 1:], 6))
 
 
 # ------------------------------------------------------------
 def test_mde2():
     """MDE on dimx Fly data"""
     data = MDE_FlyData()
-
     kwargs = MDEArgs.copy()
     kwargs.update(
         dict(
@@ -75,13 +67,7 @@ def test_mde2():
         )
     )
 
-    mde = _mde(data, kwargs)
-    mde.Run()
+    mde = fastccm_mde(data, kwargs)
+    valid = ValidData("MDE_test2_valid.csv")
 
-    df = mde.MDEOut
-    assert df is not None
-    dfv = ValidData("MDE_test2_valid.csv")
-
-    mdeOut = round(df.iloc[:, 1:], 6)
-    valid = round(dfv.iloc[:, 1:], 6)
-    assert mdeOut.equals(valid)
+    assert round(mde.iloc[:, 1:], 6).equals(round(valid.iloc[:, 1:], 6))

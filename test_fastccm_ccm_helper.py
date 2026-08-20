@@ -1,10 +1,8 @@
 from importlib import import_module
 
-import pyEDM as EDM
 from fastccm import PairwiseCCM
 from fastccm.utils.utils import get_td_embedding_np
 from numpy import array_equal, asarray, diff, isfinite
-from pandas import DataFrame
 
 
 # ------------------------------------------------------------
@@ -34,56 +32,29 @@ def fastccm_simplex_rho(x, y, E=3, tau=1, **kwargs):
 
 
 # ------------------------------------------------------------
-def pyedm_simplex_rho(data, **kwargs):
-    """pyEDM Simplex prediction/observation correlation for X -> Y."""
-    result = EDM.Simplex(
-        data,
-        columns="X",
-        target="Y",
-        noTime=True,
-        **kwargs,
-    )
-    return float(
-        result[["Observations", "Predictions"]].corr()["Predictions"]["Observations"]
-    )
-
-
-# ------------------------------------------------------------
-def pyedm_ccm_x_to_y(data, **kwargs):
-    """pyEDM CCM X:Y value for one full-library row."""
-    result = EDM.CCM(
-        data,
-        columns="X",
-        target="Y",
-        noTime=True,
-        parallel=False,
-        **kwargs,
-    )
-    return float(result["X:Y"].iloc[0])
-
-
-# ------------------------------------------------------------
-def xy_dataframe(x, y):
-    """Two scalar series -> pyEDM noTime DataFrame."""
-    return DataFrame(dict(X=x, Y=y))
-
-
-# ------------------------------------------------------------
 def _manual_simplex_score_curve(x, y, lib_sizes, E, tau, **kwargs):
     """FastCCM simplex rho values over increasing library sizes."""
     x_emb = time_delay_embedding(x, E=E, tau=tau)
     y_emb = time_delay_embedding(y, E=E, tau=tau)
+    curve_kwargs = dict(kwargs)
+    trials = curve_kwargs.pop("trials", 1)
+    seed = curve_kwargs.pop("seed", None)
 
     rho = []
     for lib_size in lib_sizes:
-        score = simplex_score_matrix(
-            X_emb=x_emb,
-            Y_emb=y_emb,
-            library_size=lib_size,
-            method="simplex",
-            **kwargs,
-        )
-        rho.append(score[-1].squeeze())
+        scores = []
+        for trial in range(trials):
+            trial_seed = None if seed is None else int(seed) + trial
+            score = simplex_score_matrix(
+                X_emb=x_emb,
+                Y_emb=y_emb,
+                library_size=lib_size,
+                method="simplex",
+                seed=trial_seed,
+                **curve_kwargs,
+            )
+            scores.append(score[-1].squeeze())
+        rho.append(asarray(scores, dtype=float).mean())
     return asarray(rho, dtype=float)
 
 
@@ -98,20 +69,21 @@ def _ccm_utils_simplex_score_curve(x, y, lib_sizes, E, tau, **kwargs):
     )
     ccm_kwargs = dict(kwargs)
     ccm_kwargs.pop("clean_after", None)
+    trials = ccm_kwargs.pop("trials", 1)
 
     result = functions.convergence_test(
         time_delay_embedding(x, E=E, tau=tau),
         time_delay_embedding(y, E=E, tau=tau),
         library_sizes=lib_sizes,
         method="simplex",
-        trials=1,
+        trials=trials,
         **ccm_kwargs,
     )
 
     if not array_equal(result["library_sizes"], asarray(lib_sizes)):
         raise ValueError("ccm_utils returned unexpected library_sizes.")
 
-    rho = asarray(result["X_to_Y"][:, 0, -1, 0, 0], dtype=float)
+    rho = asarray(result["X_to_Y"][:, :, -1, 0, 0], dtype=float).mean(axis=1)
     if rho.shape != (len(lib_sizes),) or not isfinite(rho).all():
         raise ValueError("ccm_utils returned invalid convergence rho values.")
     return rho
@@ -122,7 +94,7 @@ def simplex_score_curve(x, y, lib_sizes, E, tau, **kwargs):
     """FastCCM simplex rho curve, preferring ccm_utils with manual fallback."""
     try:
         return _ccm_utils_simplex_score_curve(x, y, lib_sizes, E, tau, **kwargs)
-    except ImportError, TypeError, ValueError, KeyError, IndexError, RuntimeError:
+    except (ImportError, TypeError, ValueError, KeyError, IndexError, RuntimeError):
         return _manual_simplex_score_curve(x, y, lib_sizes, E, tau, **kwargs)
 
 

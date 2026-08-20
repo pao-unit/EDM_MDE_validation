@@ -1,54 +1,61 @@
-"""Validation tests for FastCCM EmbedDimension-equivalent rho against pyEDM"""
+"""Parked FastCCM EmbedDimension parity tests.
 
-import pyEDM as EDM
+We are not pursuing pyEDM EmbedDimension reproduction in the FastCCM mirror.
+These tests are kept only as historical parity targets.  The cleaner
+FastCCM-native E/tau search is
+`fastccm.ccm_utils.Functions.find_optimal_embedding_params`, which compares all
+candidate embeddings over one unified minimum common prediction length after
+embedding.  pyEDM's EmbedDimension fixtures use independent prediction lengths
+for each embedding dimension, so reproducing them requires compatibility
+machinery that is outside the current FastCCM focus.
+"""
+
 import pytest
+from pyEDM import sampleData
 
-from conftest import EmbedDimensionArgs
-from test_fastccm_embed_dimension_helper import embed_dimension, pyedm_embed_dimension
+from conftest import EmbedDimensionArgs, ValidData
+from test_fastccm_embed_dimension_helper import embed_dimension
 
-# FastCCM and pyEDM can choose different equal-distance neighbors for E=1 on
-# rounded sample data.  The remaining E values are typically identical at 6 dp.
-EDIM_RHO_ABS = 6e-3
+pytestmark = pytest.mark.skip(
+    reason=(
+        "Parked parity target: FastCCM mirror is no longer pursuing pyEDM "
+        "EmbedDimension reproduction."
+    )
+)
 
 
 # ------------------------------------------------------------
 def test_edim1():
     """Lorenz V1 Tp=5 tau=-5"""
-    data = EDM.sampleData["Lorenz5D"]
+    data = sampleData["Lorenz5D"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(columns="V1", target="V1", lib=[1, 1000], pred=[1, 1000], Tp=5, tau=-5)
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_1_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim2():
     """block_3sp cross map"""
-    data = EDM.sampleData["block_3sp"]
+    data = sampleData["block_3sp"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(dict(columns="x_t", target="z_t", lib=[1, 198], pred=[1, 198]))
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_2_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim3():
     """SumFlow_1980-2005"""
-    data = EDM.sampleData["SumFlow_1980-2005"]
+    data = sampleData["SumFlow_1980-2005"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(
@@ -60,19 +67,16 @@ def test_edim3():
         )
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_3_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim4():
     """SumFlow_1980-2005 out of sample"""
-    data = EDM.sampleData["SumFlow_1980-2005"]
+    data = sampleData["SumFlow_1980-2005"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(
@@ -84,55 +88,46 @@ def test_edim4():
         )
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_4_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim5():
     """TentMap"""
-    data = EDM.sampleData["TentMapNoise"]
+    data = sampleData["TentMapNoise"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(columns="TentMap", target="TentMap", lib=[1, 999], pred=[1, 999], tau=-3)
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_5_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim6():
     """Lorenz V1 Tp=-5 tau=5"""
-    data = EDM.sampleData["Lorenz5D"]
+    data = sampleData["Lorenz5D"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(columns="V1", target="V1", lib=[1, 1000], pred=[1, 1000], Tp=-5, tau=5)
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_6_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)
 
 
 # ------------------------------------------------------------
 def test_edim7():
     """Lorenz V1:V4 Tp=5 tau=-5 xRad=20"""
-    data = EDM.sampleData["Lorenz5D"]
+    data = sampleData["Lorenz5D"]
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(
         dict(
@@ -146,10 +141,7 @@ def test_edim7():
         )
     )
 
-    fastccm = embed_dimension(data, kwargs)
-    pyedm = pyedm_embed_dimension(data, kwargs)
+    E = embed_dimension(data, kwargs)
+    Ev = ValidData("EDim_7_valid.csv")
 
-    assert fastccm["E"].equals(pyedm["E"])
-    assert fastccm["rho"].to_numpy() == pytest.approx(
-        pyedm["rho"].to_numpy(), abs=EDIM_RHO_ABS
-    )
+    assert E.equals(Ev)

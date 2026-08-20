@@ -13,6 +13,7 @@ Contents:
 
 import os
 from multiprocessing import get_context, get_start_method
+from pathlib import Path
 from typing import Any
 
 from pandas import read_csv
@@ -60,8 +61,19 @@ def MDE_FlyData():
     except ImportError:
         raise ImportError("MDE_FlyData(): MDE package dimx not imported")
 
-    file_path = os.path.dirname(os.path.abspath(dx.__file__))
-    return read_csv(file_path + "/data/Fly80XY_norm_1061.csv")
+    package_dir = Path(dx.__file__).resolve().parent
+    candidates = [
+        package_dir / "data" / "Fly80XY_norm_1061.csv",
+        package_dir.parent / "data" / "Fly80XY_norm_1061.csv",
+    ]
+    for path in candidates:
+        if path.exists():
+            return read_csv(path)
+
+    raise FileNotFoundError(
+        "MDE_FlyData(): could not find Fly80XY_norm_1061.csv in dimx package "
+        "or source checkout."
+    )
 
 
 # ---------------------------------------------------------------------------

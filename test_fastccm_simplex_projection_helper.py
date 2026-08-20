@@ -1,5 +1,5 @@
 from fastccm import PairwiseCCM
-from numpy import asarray, isnan
+from numpy import asarray
 from pandas import Series
 
 from test_edmkit_simplex_projection_helper import _dimension, _indices, _names
@@ -29,39 +29,25 @@ def transform_args(kwargs):
 def transform_data(data, kwargs):
     """DataFrame + pyEDM Simplex kwargs -> FastCCM predict_matrix data args.
 
-    For disjoint lib/pred with no exclusionRadius, all queries can be sent to
-    FastCCM at once. For overlapping or exclusionRadius cases, build one
-    FastCCM call per query with the query-specific library rows pyEDM permits.
+    Only the disjoint lib/pred, no-exclusion case is represented here because
+    it maps cleanly to one vectorized FastCCM predict_matrix call.
     """
     emb, lib_i, pred_i, libOverlap = _indices(data, kwargs)
     target = data[_names(kwargs["target"])[0]].to_numpy(dtype=float)
     lib_target_i = lib_i + kwargs["Tp"]
 
-    if not (libOverlap or kwargs["exclusionRadius"] > 0):
-        return dict(
-            X_lib_emb=[emb[lib_i]],
-            Y_lib_emb=[target[lib_target_i, None]],
-            X_pred_emb=[emb[pred_i]],
-            library_size=len(lib_i),
+    if libOverlap or kwargs["exclusionRadius"] > 0:
+        raise NotImplementedError(
+            "Future parity target: overlapping lib/pred or exclusionRadius "
+            "needs vectorized query-specific masking before this mirror is active."
         )
 
-    batches = []
-    for pred_row in pred_i:
-        keep = ~isnan(target[lib_target_i])
-        if kwargs["exclusionRadius"] > 0:
-            keep &= abs(lib_i - pred_row) > kwargs["exclusionRadius"]
-        elif libOverlap:
-            keep &= lib_i != pred_row
-
-        batches.append(
-            dict(
-                X_lib_emb=[emb[lib_i[keep]]],
-                Y_lib_emb=[target[lib_target_i[keep], None]],
-                X_pred_emb=[emb[pred_row : pred_row + 1]],
-                library_size=keep.sum(),
-            )
-        )
-    return dict(_batches=batches)
+    return dict(
+        X_lib_emb=[emb[lib_i]],
+        Y_lib_emb=[target[lib_target_i, None]],
+        X_pred_emb=[emb[pred_i]],
+        library_size=len(lib_i),
+    )
 
 
 # ------------------------------------------------------------
@@ -81,12 +67,4 @@ def transform_valid(dfv):
 def simplex_projection(**kwargs):
     """Run FastCCM's simplex-equivalent prediction path in double precision."""
     ccm = PairwiseCCM(device="cpu", dtype="float64", compute_dtype="float64")
-    batches = kwargs.pop("_batches", None)
-    if batches is None:
-        return ccm.predict_matrix(**kwargs)
-
-    predictions = []
-    for batch in batches:
-        pred = ccm.predict_matrix(**batch, **kwargs)
-        predictions.append(pred[0, 0, 0, 0])
-    return asarray(predictions, dtype=float)[:, None, None, None]
+    return ccm.predict_matrix(**kwargs)
