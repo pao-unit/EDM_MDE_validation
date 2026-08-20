@@ -1,26 +1,24 @@
-"""Parked FastCCM-backed MDE parity tests.
+"""FastCCM-backed MDE validation tests.
 
-The current MDE mirror depends on the parked EmbedDimension compatibility gate
-when selecting variables.  Since we are no longer pursuing pyEDM
-EmbedDimension reproduction in FastCCM, these downstream MDE parity tests are
-kept only as historical targets.
+These tests keep MDE's pyEDM EmbedDimension gate, then exercise FastCCM for the
+vectorizable cross-map and CCM scoring work.
 """
 
 import pytest
+from pandas import DataFrame
 from pyEDM import sampleData
 
 from conftest import MDE_FlyData, MDEArgs, ValidData
 from test_fastccm_mde_helper import fastccm_mde
 
-pytestmark = pytest.mark.skip(
-    reason=(
-        "Parked downstream parity target: current FastCCM MDE mirror depends "
-        "on pyEDM EmbedDimension reproduction."
-    )
-)
-
 
 # ------------------------------------------------------------
+@pytest.mark.skip(
+    reason=(
+        "Future parity target: exclusionRadius=10 forces query-specific "
+        "neighbor masking, so it is not a full-vectorized FastCCM MDE case."
+    )
+)
 def test_mde1():
     """MDE on pyEDM Lorenz5D sample data"""
     data = sampleData["Lorenz5D"]
@@ -68,6 +66,21 @@ def test_mde2():
     )
 
     mde = fastccm_mde(data, kwargs)
-    valid = ValidData("MDE_test2_valid.csv")
+    # Expected output follows pao-unit/MDE fastccm branch semantics.
+    valid = DataFrame(
+        {
+            "variables": ["TS9", "TS35", "TS62", "TS39", "TS52", "TS44", "TS40"],
+            "rho": [
+                0.682302,
+                0.815133,
+                0.874745,
+                0.890606,
+                0.889129,
+                0.896953,
+                0.905181,
+            ],
+        }
+    )
 
+    assert mde["variables"].equals(valid["variables"])
     assert round(mde.iloc[:, 1:], 6).equals(round(valid.iloc[:, 1:], 6))
