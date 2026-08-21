@@ -1,9 +1,10 @@
-"""Validation tests for pyEDM CCM"""
+"""Validation tests for edmkit ccm mirror against pyEDM CCM ValidOutput"""
 
 import pyEDM as EDM
 from numpy import nan
 
 from conftest import CCMArgs, ValidData
+from test_edmkit_ccm_helper import edmkit_ccm
 
 
 # ------------------------------------------------------------
@@ -22,7 +23,7 @@ def test_ccm1():
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = edmkit_ccm(data, kwargs)
     dfv = ValidData("CCM_anch_sst_valid.csv")
 
     ccm = round(df.iloc[:, 1:], 6)
@@ -48,7 +49,7 @@ def test_ccm2():
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = edmkit_ccm(data, kwargs)
     dfv = ValidData("CCM_Lorenz5D_MV_valid.csv")
 
     ccm = round(df.iloc[:, 1:], 6)
@@ -77,7 +78,7 @@ def test_ccm3():
         )
     )
 
-    df = EDM.CCM(dfn, **kwargs)
+    df = edmkit_ccm(dfn, kwargs)
     dfv = ValidData("CCM_nan_valid.csv")
 
     ccm = round(df.iloc[:, 1:], 6)
@@ -102,7 +103,7 @@ def test_ccm4():
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = edmkit_ccm(data, kwargs)
     dfv = ValidData("CCM_NegativeTp.csv")
 
     ccm = round(df.iloc[:, 1:], 6)
@@ -129,7 +130,7 @@ def test_ccm5():
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = edmkit_ccm(data, kwargs)
     dfv = ValidData("CCM_exclusionRadius.csv")
 
     ccm = round(df.iloc[:, 1:], 6)
@@ -154,7 +155,7 @@ def test_ccm6():
         )
     )
 
-    df = EDM.CCM(data, **kwargs)
+    df = edmkit_ccm(data, kwargs)
     dfv = ValidData("CCM_positiveTau.csv")
 
     ccm = round(df.iloc[:, 1:], 6)

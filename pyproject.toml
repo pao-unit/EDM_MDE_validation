@@ -1,0 +1,33 @@
+[project]
+name = "edm-mde-validation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "dimx>=1.2.0",
+    "edmkit>=0.0.12",
+    "edmkit-search>=0.2.1",
+    "fastccm>=0.3.1",
+    "numpy>=2.5.2",
+    "pandas>=3.0.5",
+    "pyedm>=2.5.6",
+    "pytest>=9.1.1",
+    "torch>=2.13.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.3",
+    "ty>=0.0.72",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff.lint]
+# C408: the original test suite intentionally uses dict(key = value)
+# for keyword-argument tables; keep that style.
+ignore = ["C408"]

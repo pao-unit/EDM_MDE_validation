@@ -1,29 +1,14 @@
-"""Validation tests for dimx MDE"""
+"""Validation tests for edmkit search MDE mirror against dimx ValidOutput"""
 
-from inspect import signature
-
-import dimx as dx
 from pyEDM import sampleData
 
 from conftest import MDE_FlyData, MDEArgs, ValidData
+from test_edmkit_search_helper import edmkit_search
 
 
 # ------------------------------------------------------------
-def _mde(data, kwargs):
-    """Create dimx.MDE with the kwargs supported by the imported package."""
-    params = signature(dx.MDE).parameters
-    kwargs = dict(kwargs)
-    if "cores" in params and "crossMapCores" in kwargs:
-        kwargs["cores"] = kwargs.pop("crossMapCores")
-    elif "crossMapCores" in params and "cores" in kwargs:
-        kwargs["crossMapCores"] = kwargs.pop("cores")
-
-    return dx.MDE(data, **{k: v for k, v in kwargs.items() if k in params})
-
-
-# ------------------------------------------------------------
-def test_mde1():
-    """MDE on pyEDM Lorenz5D sample data"""
+def test_search1():
+    """MDE on pyEDM Lorenz5D sample data (mirrors test_mde1)"""
     data = sampleData["Lorenz5D"]
     kwargs = MDEArgs.copy()
     kwargs.update(
@@ -42,11 +27,7 @@ def test_mde1():
         )
     )
 
-    mde = _mde(data, kwargs)
-    mde.Run()
-
-    df = mde.MDEOut
-    assert df is not None
+    df = edmkit_search(data, kwargs)
     dfv = ValidData("MDE_test1_valid.csv")
 
     mdeOut = round(df.iloc[:, 1:], 6)
@@ -55,8 +36,8 @@ def test_mde1():
 
 
 # ------------------------------------------------------------
-def test_mde2():
-    """MDE on dimx Fly data"""
+def test_search2():
+    """MDE on dimx Fly data (mirrors test_mde2)"""
     data = MDE_FlyData()
 
     kwargs = MDEArgs.copy()
@@ -75,11 +56,7 @@ def test_mde2():
         )
     )
 
-    mde = _mde(data, kwargs)
-    mde.Run()
-
-    df = mde.MDEOut
-    assert df is not None
+    df = edmkit_search(data, kwargs)
     dfv = ValidData("MDE_test2_valid.csv")
 
     mdeOut = round(df.iloc[:, 1:], 6)

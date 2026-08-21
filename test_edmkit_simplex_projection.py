@@ -1,10 +1,18 @@
-"""Validation tests for pyEDM Simplex"""
+"""Validation tests for edmkit simplex_projection against pyEDM ValidOutput"""
 
 import pyEDM as EDM
+from edmkit.simplex_projection import simplex_projection
 from numpy import array, array_equal, nan
 from pandas import DataFrame
 
 from conftest import SimplexArgs, ValidData
+from test_edmkit_simplex_projection_helper import (
+    knn_neighbors,
+    transform_args,
+    transform_data,
+    transform_result,
+    transform_valid,
+)
 
 
 # ------------------------------------------------------------
@@ -14,11 +22,11 @@ def test_simplex1():
     kwargs = SimplexArgs.copy()
     kwargs.update(dict(columns="x_t", target="x_t", lib=[1, 100], pred=[101, 195], E=3))
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_E3_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -38,11 +46,11 @@ def test_simplex2():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_E3_embd_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -62,11 +70,11 @@ def test_simplex3():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_E3_embd_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -79,11 +87,11 @@ def test_simplex4():
         dict(columns="x_t", target="y_t", lib=[1, 100], pred=[50, 80], E=3, Tp=-2)
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_negTp_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -103,11 +111,11 @@ def test_simplex5():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_validLib_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -120,11 +128,11 @@ def test_simplex6():
         dict(columns="x", target="x", lib=[1, 40, 50, 130], pred=[80, 170], E=2, tau=-3)
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_disjointLib_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -146,11 +154,11 @@ def test_simplex7():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_disjointPred_nan_valid.csv")
 
-    smplx = round(df.get("Predictions"), 5)
-    valid = round(dfv.get("Predictions"), 5)
+    smplx = round(transform_result(pred), 5)
+    valid = round(transform_valid(dfv), 5)
     assert smplx.equals(valid)
 
 
@@ -165,11 +173,11 @@ def test_simplex8():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_exclRadius_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -184,11 +192,11 @@ def test_simplex9():
     kwargs = SimplexArgs.copy()
     kwargs.update(dict(columns="x", target="y", lib=[1, 100], pred=[1, 95], E=2))
 
-    df = EDM.Simplex(dfn, **kwargs)
+    pred = simplex_projection(**transform_data(dfn, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_nan_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -203,11 +211,11 @@ def test_simplex10():
     kwargs = SimplexArgs.copy()
     kwargs.update(dict(columns="y", target="x", lib=[1, 200], pred=[1, 195], E=2))
 
-    df = EDM.Simplex(dfn, **kwargs)
+    pred = simplex_projection(**transform_data(dfn, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_nan2_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -224,13 +232,10 @@ def test_simplex11():
             pred=[350, 355],
             knn=1,
             embedded=True,
-            returnObject=True,
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
-
-    knn = df.knn_neighbors
+    knn = knn_neighbors(data, kwargs)
     knnValid = array([322, 334, 362, 387, 356, 355])[:, None]
     assert array_equal(knn, knnValid)
 
@@ -251,13 +256,10 @@ def test_simplex12():
             pred=[101, 110],
             E=5,
             exclusionRadius=10,
-            returnObject=True,
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
-
-    knn = df.knn_neighbors[:, 0]
+    knn = knn_neighbors(data, kwargs)[:, 0]
     knnValid = array([89, 90, 91, 92, 93, 94, 95, 96, 97, 98])
     assert array_equal(knn, knnValid)
 
@@ -273,11 +275,11 @@ def test_simplex13():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_posTau_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)
 
 
@@ -298,9 +300,9 @@ def test_simplex14():
         )
     )
 
-    df = EDM.Simplex(data, **kwargs)
+    pred = simplex_projection(**transform_data(data, kwargs), **transform_args(kwargs))
     dfv = ValidData("Smplx_negTp_posTau_block_3sp_valid.csv")
 
-    smplx = round(df.get("Predictions"), 6)
-    valid = round(dfv.get("Predictions"), 6)
+    smplx = round(transform_result(pred), 6)
+    valid = round(transform_valid(dfv), 6)
     assert smplx.equals(valid)

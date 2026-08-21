@@ -1,8 +1,9 @@
-"""Validation tests for pyEDM EmbedDimension"""
+"""Validation tests for edmkit EmbedDimension mirror against pyEDM ValidOutput"""
 
 import pyEDM as EDM
 
 from conftest import EmbedDimensionArgs, ValidData
+from test_edmkit_edim_helper import embed_dimension
 
 
 # ------------------------------------------------------------
@@ -14,7 +15,7 @@ def test_edim1():
         dict(columns="V1", target="V1", lib=[1, 1000], pred=[1, 1000], Tp=5, tau=-5)
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_1_valid.csv")
 
     assert E.equals(Ev)
@@ -27,7 +28,7 @@ def test_edim2():
     kwargs = EmbedDimensionArgs.copy()
     kwargs.update(dict(columns="x_t", target="z_t", lib=[1, 198], pred=[1, 198]))
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_2_valid.csv")
 
     assert E.equals(Ev)
@@ -48,7 +49,7 @@ def test_edim3():
         )
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_3_valid.csv")
 
     assert E.equals(Ev)
@@ -69,7 +70,7 @@ def test_edim4():
         )
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_4_valid.csv")
 
     assert E.equals(Ev)
@@ -84,7 +85,7 @@ def test_edim5():
         dict(columns="TentMap", target="TentMap", lib=[1, 999], pred=[1, 999], tau=-3)
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_5_valid.csv")
 
     assert E.equals(Ev)
@@ -99,7 +100,7 @@ def test_edim6():
         dict(columns="V1", target="V1", lib=[1, 1000], pred=[1, 1000], Tp=-5, tau=5)
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_6_valid.csv")
 
     assert E.equals(Ev)
@@ -122,7 +123,7 @@ def test_edim7():
         )
     )
 
-    E = EDM.EmbedDimension(data, **kwargs)
+    E = embed_dimension(data, kwargs)
     Ev = ValidData("EDim_7_valid.csv")
 
     assert E.equals(Ev)
